@@ -1,15 +1,15 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express')
 const app = express()
 const cors = require('cors')
 require('dotenv').config()
-const port =process.env.PORT || 5000
+const port = process.env.PORT || 5000
 
 app.use(cors({
-   origin:[
+  origin: [
     'http://localhost:5173'
-   ] ,
-   credentials: true,
+  ],
+  credentials: true,
 }))
 app.use(express.json())
 
@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-   
+
     // const users = client.db("Doc-House").collection("Users");
     const doctors = client.db("Doc-House").collection("Doctors");
 
@@ -37,11 +37,21 @@ async function run() {
       const doctor = await doctors.find().toArray()
       res.send(doctor)
     })
+
+    app.get('/doctor/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const doctor = await doctors.findOne(query)
+      res.send(doctor)
+    })
+
     app.post('/doctors', async (req, res) => {
       const doctor = req.body
       const result = await doctors.insertOne(doctor)
       res.send(result)
     })
+
+
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
