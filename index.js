@@ -33,7 +33,10 @@ async function run() {
 
 
     // doctors
-
+    app.get('/doctors', async (req, res) => {
+      const doctor = await doctors.find().toArray()
+      res.send(doctor)
+    })
     app.post('/doctors', async (req, res) => {
       const doctor = req.body
       const result = await doctors.insertOne(doctor)
