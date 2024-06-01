@@ -37,6 +37,12 @@ async function run() {
       const user = await users.find().toArray()
       res.send(user)
     })
+    app.get('/users/:email', async (req, res) => {
+      const email = req.params.email
+      const query = {email: email}
+      const user = await users.findOne(query)
+      res.send(user)
+    })
     app.post('/users', async (req, res) => {
       const body = req.body
       const result = await users.insertOne(body)
