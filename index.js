@@ -33,6 +33,10 @@ async function run() {
 
 
     // user
+    app.get('/users', async (req, res) => {
+      const user = await users.find().toArray()
+      res.send(user)
+    })
     app.post('/users', async (req, res) => {
       const body = req.body
       const result = await users.insertOne(body)
