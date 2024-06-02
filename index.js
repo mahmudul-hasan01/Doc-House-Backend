@@ -61,7 +61,19 @@ async function run() {
       const result = await users.updateOne(query, updatedDoc)
       res.send(result)
     })
-
+    app.patch('/updateRole/:email', async (req, res) => {
+      const email = req.params.email
+      const query = {email: email}
+      const body = req.body
+      const updatedDoc = {
+        $set: {
+          role: body.role,
+          status: body.status,
+        }
+      }
+      const result = await users.updateOne(query, updatedDoc)
+      res.send(result)
+    })
 
     // doctors
     app.get('/doctors', async (req, res) => {
