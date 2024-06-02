@@ -49,6 +49,18 @@ async function run() {
       const result = await users.insertOne(body)
       res.send(result)
     })
+    app.patch('/requestRole/:email', async (req, res) => {
+      const email = req.params.email
+      const query = {email: email}
+      const body = req.body
+      const updatedDoc = {
+        $set: {
+          status: body.status,
+        }
+      }
+      const result = await users.updateOne(query, updatedDoc)
+      res.send(result)
+    })
 
 
     // doctors
