@@ -40,7 +40,7 @@ async function run() {
     })
     app.get('/users/:email', async (req, res) => {
       const email = req.params.email
-      const query = {email: email}
+      const query = { email: email }
       const user = await users.findOne(query)
       res.send(user)
     })
@@ -50,16 +50,21 @@ async function run() {
       res.send(result)
     })
 
+
     // doctors
     app.get('/doctors', async (req, res) => {
       const doctor = await doctors.find().toArray()
       res.send(doctor)
     })
     app.get('/doctor/:id', async (req, res) => {
-      const id = req.params.id
-      const query = { _id: new ObjectId(id) }
-      const doctor = await doctors.findOne(query)
-      res.send(doctor)
+      try {
+        const id = req.params.id
+        const query = { _id: new ObjectId(id) }
+        const doctor = await doctors.findOne(query)
+        res.send(doctor)
+      }catch(err){
+        console.log(object);
+      }
     })
     app.post('/doctors', async (req, res) => {
       const doctor = req.body
@@ -68,6 +73,10 @@ async function run() {
     })
 
     // feedback
+    app.get('/feedback', async (req, res) => {
+      const feedback = await feedbacks.find().toArray()
+      res.send(feedback)
+    })
     app.post('/feedback', async (req, res) => {
       const feedback = req.body
       const result = await feedbacks.insertOne(feedback)
