@@ -30,6 +30,7 @@ async function run() {
 
     const users = client.db("Doc-House").collection("Users");
     const doctors = client.db("Doc-House").collection("Doctors");
+    const feedbacks = client.db("Doc-House").collection("Feedbacks");
 
 
     // user
@@ -54,19 +55,25 @@ async function run() {
       const doctor = await doctors.find().toArray()
       res.send(doctor)
     })
-
     app.get('/doctor/:id', async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const doctor = await doctors.findOne(query)
       res.send(doctor)
     })
-
     app.post('/doctors', async (req, res) => {
       const doctor = req.body
       const result = await doctors.insertOne(doctor)
       res.send(result)
     })
+
+    // feedback
+    app.post('/feedback', async (req, res) => {
+      const feedback = req.body
+      const result = await feedbacks.insertOne(feedback)
+      res.send(result)
+    })
+
 
 
 
