@@ -57,7 +57,7 @@ async function run() {
     })
     app.patch('/requestRole/:email', async (req, res) => {
       const email = req.params.email
-      const query = {email: email}
+      const query = { email: email }
       const body = req.body
       const updatedDoc = {
         $set: {
@@ -69,7 +69,7 @@ async function run() {
     })
     app.patch('/updateRole/:email', async (req, res) => {
       const email = req.params.email
-      const query = {email: email}
+      const query = { email: email }
       const body = req.body
       const updatedDoc = {
         $set: {
@@ -92,13 +92,19 @@ async function run() {
         const query = { _id: new ObjectId(id) }
         const doctor = await doctors.findOne(query)
         res.send(doctor)
-      }catch(err){
+      } catch (err) {
         console.log(object);
       }
     })
     app.post('/doctors', async (req, res) => {
       const doctor = req.body
       const result = await doctors.insertOne(doctor)
+      res.send(result)
+    })
+    app.delete('/doctor/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await doctors.deleteOne(query)
       res.send(result)
     })
 
