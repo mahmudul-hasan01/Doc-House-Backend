@@ -103,8 +103,14 @@ async function run() {
     })
 
     // feedback
-    app.get('/feedback', async (req, res) => {
+    app.get('/feedbacks', async (req, res) => {
       const feedback = await feedbacks.find().toArray()
+      res.send(feedback)
+    })
+    app.get('/feedback', async (req, res) => {
+      const doctorName = req.query.name
+      const query = { doctorName: doctorName }
+      const feedback = await feedbacks.find(query).toArray()
       res.send(feedback)
     })
     app.post('/feedback', async (req, res) => {
