@@ -93,7 +93,7 @@ async function run() {
         const doctor = await doctors.findOne(query)
         res.send(doctor)
       } catch (err) {
-        console.log(object);
+        console.log(err);
       }
     })
     app.post('/doctors', async (req, res) => {
@@ -105,6 +105,30 @@ async function run() {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const result = await doctors.deleteOne(query)
+      res.send(result)
+    })
+    app.patch('/updateDoctor/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const body = req.body
+      console.log(id,body);
+      const updatedDoc = {
+        $set: {
+          name: body.name,
+          specialty: body.specialty,
+          education: body.education,
+          startDate: body.startDate,
+          endDate: body.endDate,
+          availableDate: body.availableDate,
+          availableTimeStart: body.availableTimeStart,
+          availableTimeEnd: body.availableTimeEnd,
+          price: body.price,
+          rating: body.rating,
+          about: body.about,
+          image: body.image
+        }
+      }
+      const result = await doctors.updateOne(query, updatedDoc)
       res.send(result)
     })
 
