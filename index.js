@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 require('dotenv').config()
+const stripe = require('stripe')(process.env.Stripe_Secret_key)
 const port = process.env.PORT || 5000
 
 app.use(cors({
@@ -111,7 +112,7 @@ async function run() {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const body = req.body
-      console.log(id,body);
+      console.log(id, body);
       const updatedDoc = {
         $set: {
           name: body.name,
@@ -134,11 +135,16 @@ async function run() {
 
     // feedback
     app.get('/feedbacks', async (req, res) => {
-      const feedback = await feedbacks.find().toArray()
-      res.send(feedback)
+      try {
+        const feedback = await feedbacks.find().toArray()
+        res.send(feedback)
+      } catch (err) {
+        console.log(err);
+      }
     })
     app.get('/feedback', async (req, res) => {
       const doctorName = req.query.name
+      console.log(doctorName);
       const query = { doctorName: doctorName }
       const feedback = await feedbacks.find(query).toArray()
       res.send(feedback)
@@ -147,6 +153,20 @@ async function run() {
       const feedback = req.body
       const result = await feedbacks.insertOne(feedback)
       res.send(result)
+    })
+
+    // Stripe-Payment
+    app.post('/payment-intent', async (req, res) => {
+      const { price } = req.body
+      const amount = parseInt(price * 100)
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ['card']
+      })
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
     })
 
 
