@@ -32,6 +32,8 @@ async function run() {
     const users = client.db("Doc-House").collection("Users");
     const doctors = client.db("Doc-House").collection("Doctors");
     const feedbacks = client.db("Doc-House").collection("Feedbacks");
+    const appointments = client.db("Doc-House").collection("Appointments");
+    const reviews = client.db("Doc-House").collection("Reviews");
 
 
     // user
@@ -155,6 +157,13 @@ async function run() {
       res.send(result)
     })
 
+    // review
+    app.post('/review', async (req, res) => {
+      const review = req.body
+      const result = await reviews.insertOne(review)
+      res.send(result)
+    })
+
     // Stripe-Payment
     app.post('/payment-intent', async (req, res) => {
       const { price } = req.body
@@ -167,6 +176,18 @@ async function run() {
       res.send({
         clientSecret: paymentIntent.client_secret,
       });
+    })
+    // payment
+    app.post('/payment', async (req, res) => {
+      const payment = req.body
+      const paymentResult = await appointments.insertOne(payment)
+      // const query = {
+      //   _id: {
+      //     $in: payment.cartIds.map(id => new ObjectId(id))
+      //   }
+      // }
+      // const deleteResult = await carts.deleteMany(query)
+      res.send({ paymentResult, deleteResult })
     })
 
 
