@@ -52,6 +52,13 @@ async function run() {
       const result = await users.insertOne(body)
       res.send(result)
     })
+    app.get('/users/admin/:email', async (req, res) => {
+      const email = req.params.email
+      const query = { email: email }
+      const user = await users.findOne(query)
+      const admin = user?.role === 'Admin'
+      res.send({ admin })
+    })
     app.delete('/users/:id', async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
@@ -166,6 +173,12 @@ async function run() {
         console.log(err);
       }
     })
+    app.get('/review/:email', async (req, res) => {
+      const email = req.params.email
+      const query = {email: email}
+      const result = await reviews.find(query).toArray()
+      res.send(result)
+    })
     app.post('/review', async (req, res) => {
       const review = req.body
       const result = await reviews.insertOne(review)
@@ -191,21 +204,27 @@ async function run() {
         clientSecret: paymentIntent.client_secret,
       });
     })
-
-    // get appointments
-    app.get('/appointments', async (req, res) => {
-      const result = await appointments.find().toArray()
-      res.send(result)
-    })
     // payment
     app.post('/payment', async (req, res) => {
       const payment = req.body
       const paymentResult = await appointments.insertOne(payment)
       res.send(paymentResult)
     })
+
+    // get appointments
+    app.get('/appointments', async (req, res) => {
+      const result = await appointments.find().toArray()
+      res.send(result)
+    })
+    app.get('/appointment/:email', async (req, res) => {
+      const email = req.params.email
+      const query = { email: email }
+      const result = await appointments.find(query).toArray()
+      res.send(result)
+    })
     app.delete('/appointment/:id', async (req, res) => {
       const id = req.params.id
-      const query = { _id: new ObjectId(id) }
+      const query = { _id: new ObjectId(id)}
       const result = await appointments.deleteOne(query)
       res.send(result)
     })
