@@ -203,7 +203,12 @@ async function run() {
       const paymentResult = await appointments.insertOne(payment)
       res.send(paymentResult)
     })
-
+    app.delete('/appointment/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await appointments.deleteOne(query)
+      res.send(result)
+    })
 
     // stats
     app.get('/admin-stats', async (req, res) => {
