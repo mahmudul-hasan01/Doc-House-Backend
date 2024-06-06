@@ -191,6 +191,12 @@ async function run() {
         clientSecret: paymentIntent.client_secret,
       });
     })
+
+    // get appointments
+    app.get('/appointments', async (req, res) => {
+      const result = await appointments.find().toArray()
+      res.send(result)
+    })
     // payment
     app.post('/payment', async (req, res) => {
       const payment = req.body
