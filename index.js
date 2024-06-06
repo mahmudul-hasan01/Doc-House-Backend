@@ -171,6 +171,12 @@ async function run() {
       const result = await reviews.insertOne(review)
       res.send(result)
     })
+    app.delete('/review/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await reviews.deleteOne(query)
+      res.send(result)
+    })
 
     // Stripe-Payment
     app.post('/payment-intent', async (req, res) => {
@@ -189,15 +195,37 @@ async function run() {
     app.post('/payment', async (req, res) => {
       const payment = req.body
       const paymentResult = await appointments.insertOne(payment)
-      // const query = {
-      //   _id: {
-      //     $in: payment.cartIds.map(id => new ObjectId(id))
-      //   }
-      // }
-      // const deleteResult = await carts.deleteMany(query)
-      res.send({ paymentResult, deleteResult })
+      res.send(paymentResult)
     })
 
+
+    // stats
+    app.get('/admin-stats', async (req, res) => {
+      const user = await users.estimatedDocumentCount()
+      const doctor = await doctors.estimatedDocumentCount()
+      const appointment = await appointments.estimatedDocumentCount()
+      // this is not the best way
+      // const payment = await payments.find().toArray()
+      // const revenue = payment.reduce((total, item) => total + item.price , 0)
+      // const result = await payments.aggregate([
+      //   {
+      //     $group: {
+      //       _id: null,
+      //       totalRevenue: {
+      //         $sum: '$price'
+      //       }
+      //     }
+      //   }
+      // ]).toArray()
+      // const revenue = result.length > 0 ? result[0].totalRevenue : 0
+
+      res.send({
+        user,
+        doctor,
+        appointment,
+        // revenue
+      })
+    })
 
 
 
